@@ -1,0 +1,32 @@
+[
+  {
+    "Nama": "Icha",
+    "No_ID": "0001",
+    "Tanggal_Lahir": "17/04/2009",
+    "password" : "17042009"
+  },
+  {
+    "Nama": "Abrar",
+    "No_ID": "0002",
+    "Tanggal_Lahir": "13/12/2008",
+    "password" : "13122008"
+  },
+  {
+    "Nama": "Aqsal",
+    "No_ID": "0003",
+    "Tanggal_Lahir": "16/05/2008",
+    "password" : "16052008"
+  },
+  {
+    "Nama": "Rifqi",
+    "No_ID": "0004",
+    "Tanggal_Lahir": "18/11/2008",
+    "password" : "18112008"
+  },
+  {
+    "Nama": "Tya",
+    "No_ID": "0005",
+    "Tanggal_Lahir": "25/06/2008",
+    "password" : "25062008"
+  }
+]
