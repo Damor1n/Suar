@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Menu - SUAR</title>
+  <style>
+    :root {
+      --bg: #fffbf0;
+      --card: #ffffff;
+      --text: #234e70;
+      --muted: #4a5568;
+      --primary: #f59e0b;
+      --accent: #ec4899;
+      --highlight: #10b981;
+      --shadow: 0 12px 30px rgba(224, 87, 129, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 44%, #dbeafe 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: min(720px, 100%);
+      padding: 28px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid #e2e8f0;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .profile-widget {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .profile-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 8px 12px;
+      font-weight: 700;
+      color: #1f2937;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+      transition: transform 0.12s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .profile-btn:hover {
+      border-color: #93c5fd;
+      background: #eff6ff;
+      transform: translateY(-1px);
+    }
+
+    .profile-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 12px 25px rgba(15, 23, 42, 0.16);
+      min-width: 160px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .profile-menu.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .profile-menu a,
+    .profile-menu button {
+      display: block;
+      width: 100%;
+      padding: 10px 13px;
+      text-decoration: none;
+      color: #1f2937;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .profile-menu a:hover,
+    .profile-menu button:hover {
+      background: #f8fafc;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.95rem;
+      line-height: 1.1;
+      color: #0f172a;
+    }
+
+    p.subtitle {
+      color: var(--muted);
+      margin: 10px 0 24px;
+      font-size: 0.99rem;
+    }
+
+    .messages-section {
+      margin-top: 30px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
+    }
+
+    .sender-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      justify-content: flex-start;
+    }
+
+    .sender-btn {
+      background: white;
+      color: var(--text);
+      border: 2px solid #e2e8f0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .sender-btn:hover {
+      border-color: var(--primary);
+      background: #fffbf0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .sender-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .messages-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .messages-table thead {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    .messages-table th {
+      padding: 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .messages-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .messages-table tbody tr:hover {
+      background-color: #f8fafc;
+      transition: background-color 0.2s ease;
+    }
+
+    .messages-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pesan-text {
+      max-width: 400px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 4px solid #dc2626;
+      margin-top: 16px;
+    }
+
+    .no-messages {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .feedback-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .feedback-btn:hover {
+      background: #db2777;
+      transform: translateY(-1px);
+    }
+
+    .feedback-btn:active {
+      transform: translateY(0);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.3rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: var(--text);
+    }
+
+    .modal-body {
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+
+    .info-box strong {
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      resize: vertical;
+      min-height: 120px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      background: #e2e8f0;
+      color: var(--text);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .btn-cancel:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-submit {
+      background: var(--highlight);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: #059669;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      color: #166534;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--highlight);
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @media (max-width: 520px) {
+      .container { padding: 20px; }
+      h1 { font-size: 1.58rem; }
+      .messages-table {
+        font-size: 0.85rem;
+      }
+      .messages-table th,
+      .messages-table td {
+        padding: 8px;
+      }
+      .pesan-text {
+        max-width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="top-row">
+      <h1>Menu Admin</h1>
+      <div class="profile-widget" id="profileWidget">
+        <button type="button" class="profile-btn" id="profileBtn">
+          <span>👤 Profil</span>
+          <span>▾</span>
+        </button>
+        <div class="profile-menu" id="profileMenu" aria-hidden="true">
+          <a href="maintenance_page.html">⚙️ Settings</a>
+          <form action="logout.php" method="post" style="margin:0;">
+            <button type="submit">🔓 Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <p class="subtitle">Halaman admin untuk mengelola sistem SUAR.</p>
+
+    <div class="messages-section">
+      <h2 class="section-title">📨 Daftar Pesan</h2>
+      
+      <div>
+        <h3 style="font-size: 1rem; color: var(--text); margin-bottom: 12px;">Pilih Pengisi Pesan:</h3>
+        <div class="sender-buttons" id="senderButtons">
+          <div class="loading">Memuat data pengisi pesan...</div>
+        </div>
+      </div>
+
+      <div id="messagesContainer" style="margin-top: 24px;">
+        <div class="loading">Pilih salah satu pengiri pesan untuk melihat pesannya</div>
+      </div>
+    </div>
+
+    <div class="modal" id="feedbackModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>💬 Berikan Feedback</h2>
+          <button class="close-btn" onclick="closeFeedbackModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="success-message" id="successMessage">✓ Feedback berhasil disimpan!</div>
+          
+          <div class="info-box">
+            <strong>Dari:</strong> <span id="feedbackSender">-</span><br>
+            <strong>Waktu:</strong> <span id="feedbackTime">-</span>
+          </div>
+
+          <div class="form-group">
+            <label for="feedbackText">Pesan Asli:</label>
+            <textarea id="feedbackOriginalMessage" readonly style="background: #f8fafc; color: var(--muted);"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="feedbackText">Feedback Anda:</label>
+            <textarea id="feedbackText" placeholder="Masukkan feedback untuk pesan ini..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeFeedbackModal()">Batal</button>
+          <button class="btn-submit" onclick="submitFeedback()">Kirim Feedback</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    const profileWidget = document.getElementById('profileWidget');
+
+    profileBtn.addEventListener('click', () => {
+      const isOpen = profileMenu.classList.toggle('show');
+      profileMenu.setAttribute('aria-hidden', String(!isOpen));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!profileWidget.contains(event.target)) {
+        profileMenu.classList.remove('show');
+        profileMenu.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        profileMenu.classList.remove('show');
+        profileMenu.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    let allMessages = [];
+    let selectedSender = null;
+    let currentFeedbackIndex = null;
+
+    function openFeedbackModal(messageIndex) {
+      currentFeedbackIndex = messageIndex;
+      const message = allMessages[messageIndex];
+      
+      document.getElementById('feedbackSender').textContent = message.nama_akun;
+      document.getElementById('feedbackTime').textContent = message.waktu;
+      document.getElementById('feedbackOriginalMessage').value = message.pesan;
+      document.getElementById('feedbackText').value = '';
+      document.getElementById('successMessage').classList.remove('show');
+      
+      document.getElementById('feedbackModal').classList.add('show');
+    }
+
+    function closeFeedbackModal() {
+      document.getElementById('feedbackModal').classList.remove('show');
+      currentFeedbackIndex = null;
+    }
+
+    async function submitFeedback() {
+      const feedbackText = document.getElementById('feedbackText').value.trim();
+      
+      if (!feedbackText) {
+        alert('Feedback tidak boleh kosong!');
+        return;
+      }
+
+      const message = allMessages[currentFeedbackIndex];
+      const feedback = {
+        dari_message: message.nama_akun,
+        waktu_message: message.waktu,
+        pesan: message.pesan,
+        feedback: feedbackText,
+        waktu_feedback: new Date().toLocaleString('id-ID', { 
+          dateStyle: 'short', 
+          timeStyle: 'medium',
+          timeZone: 'Asia/Jakarta'
+        })
+      };
+
+      try {
+        const response = await fetch('simpan_feedback.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(feedback)
+        });
+
+        if (!response.ok) {
+          throw new Error('Gagal menyimpan feedback');
+        }
+
+        const result = await response.json();
+        if (result.success) {
+          document.getElementById('successMessage').classList.add('show');
+          setTimeout(() => {
+            closeFeedbackModal();
+          }, 1500);
+        } else {
+          alert('Gagal menyimpan feedback: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      const modal = document.getElementById('feedbackModal');
+      if (event.target === modal) {
+        closeFeedbackModal();
+      }
+    });
+
+    async function loadSenderButtons() {
+      const senderButtonsContainer = document.getElementById('senderButtons');
+      
+      try {
+        const response = await fetch('pesan_database.json');
+        if (!response.ok) {
+          throw new Error('Gagal memuat file pesan');
+        }
+        
+        allMessages = await response.json();
+        
+        if (!Array.isArray(allMessages) || allMessages.length === 0) {
+          senderButtonsContainer.innerHTML = '<div class="loading">Belum ada pesan</div>';
+          return;
+        }
+
+        const senderNames = [...new Set(allMessages.map(msg => msg.nama_akun))].sort();
+
+        let buttonsHTML = '';
+        senderNames.forEach((senderName) => {
+          const escapedName = (senderName || 'Unknown').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          buttonsHTML += `<button class="sender-btn" data-sender="${escapedName}" onclick="filterBySender('${escapedName}')">${escapedName}</button>`;
+        });
+
+        senderButtonsContainer.innerHTML = buttonsHTML;
+      } catch (error) {
+        senderButtonsContainer.innerHTML = `<div class="error">❌ ${error.message}</div>`;
+        console.error('Error loading sender buttons:', error);
+      }
+    }
+
+    function filterBySender(senderName) {
+      selectedSender = senderName;
+      
+      document.querySelectorAll('.sender-btn').forEach(btn => {
+        if (btn.dataset.sender === senderName) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      const filteredMessages = allMessages.filter(msg => msg.nama_akun === senderName);
+      displayMessages(filteredMessages);
+    }
+
+    function displayMessages(messages) {
+      const messagesContainer = document.getElementById('messagesContainer');
+      
+      if (!Array.isArray(messages) || messages.length === 0) {
+        messagesContainer.innerHTML = '<div class="no-messages">Belum ada pesan</div>';
+        return;
+      }
+
+      let tableHTML = `
+        <table class="messages-table">
+          <thead>
+            <tr>
+              <th style="width: 12%;">Akun</th>
+              <th style="width: 20%;">Waktu</th>
+              <th style="width: 50%;">Pesan</th>
+              <th style="width: 18%;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      const filteredMessages = selectedSender 
+        ? allMessages.filter(msg => msg.nama_akun === selectedSender)
+        : allMessages;
+
+      allMessages.forEach((msg, index) => {
+        if (selectedSender && msg.nama_akun !== selectedSender) {
+          return;
+        }
+
+        const nama = (msg.nama_akun || 'Unknown').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const waktu = (msg.waktu || 'N/A').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const pesan = (msg.pesan || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        tableHTML += `
+          <tr>
+            <td><strong>${nama}</strong></td>
+            <td>${waktu}</td>
+            <td><div class="pesan-text">${pesan}</div></td>
+            <td><button class="feedback-btn" onclick="openFeedbackModal(${index})">Kirim Balasan</button></td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+
+      messagesContainer.innerHTML = tableHTML;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSenderButtons);
+  </script>
+</body>
+</html>
